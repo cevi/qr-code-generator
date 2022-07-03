@@ -1,5 +1,6 @@
 Pillow==9.2.0
-qrcode==7.3.1
-Flask==2.0.2
+qrcodegen==1.8.0
+Flask==2.1.2
 gunicorn==20.1.0
 flask-cors==3.0.10
+svgutils==0.3.4

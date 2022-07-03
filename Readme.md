@@ -4,10 +4,23 @@ Dies ist ein einfaches python script, dass QR Codes generiert und in einer SVG D
 
 ![Beispiel QR Code](./docu/example_qr_code.png)
 
+## ToDo's
+
+- [ ] Build simple webpage as frontend
+- [ ] add filter for valid webpages, if needed??
+- [ ] host on [qr.cevi.tools](qr.cevi.tools)
+
 ## How to use?
 
-Change the value in line 40 of the source code and run:
+Start the backend docker container using
+
+```bash 
+docker-compose up
+```
+
+Then you can fetch a QR code using the following command:
 
 ```bash
-python3 main.py
+curl --header "Content-Type: application/json"   --request POST   --data '{"link":"https://cevi.ch"}'   http://localhost:5000 > logo.svg
 ```
+

@@ -4,7 +4,7 @@ import svgutils
 from qrcodegen import QrCode
 
 
-def create_qr_code(link="https://cevi.ch") -> None:
+def create_qr_code(link, save_to_svg_file=False) -> str:
     """
 
     Creates a single QR Code, then prints it to the console.
@@ -16,8 +16,12 @@ def create_qr_code(link="https://cevi.ch") -> None:
 
     # Save QR code as SVG
     svg_text = to_svg_str(qr, border=2)
-    with open('qr_code.svg', 'w') as f:
-        f.write(svg_text)
+
+    if save_to_svg_file:
+        with open('qr_code.svg', 'w') as f:
+            f.write(svg_text)
+
+    return svg_text
 
 
 def to_svg_str(qr: QrCode, border: int = 0, logo_size: int = 8) -> str:
@@ -80,4 +84,4 @@ def to_svg_str(qr: QrCode, border: int = 0, logo_size: int = 8) -> str:
 
 # Run the main program
 if __name__ == "__main__":
-    create_qr_code()
+    svg_text = create_qr_code("https://cevi.ch")
