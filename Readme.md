@@ -9,6 +9,7 @@ Dies ist ein einfaches python script, dass QR Codes generiert und in einer SVG D
 - [ ] Build simple webpage as frontend
 - [ ] add filter for valid webpages, if needed??
 - [ ] host on [qr.cevi.tools](qr.cevi.tools)
+- [ ] add png endpoint, currently only svg is supported
 
 ## How to use?
 
