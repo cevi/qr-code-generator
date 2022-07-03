@@ -4,8 +4,6 @@ import svgutils
 from qrcodegen import QrCode
 
 
-# ---- Demo suite ----
-
 def create_qr_code(link="https://cevi.ch") -> None:
     """
 
