@@ -1,0 +1,7 @@
+<input type="text" class="form-control" placeholder="Link" [(ngModel)]="qr_link" (input)="onLinkChange()">
+
+<img id="qr-code" [src]="png_src" alt="QR Code"/>
+<br>
+<a [href]="png_src" download="PNG QR Code">PNG herunterladen</a>
+<br>
+<a [href]="svg_src" download="SVG QR Code">SVG herunterladen</a>
