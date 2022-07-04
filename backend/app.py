@@ -32,9 +32,15 @@ def svg_qr_code():
         return "", 500
 
     logger.info('Create QR Code with content: ' + content['link'])
+    return create_svg_text(content)
 
-    svg_image = create_qr_code(link=content['link'])
-    return svg_image
+
+def create_svg_text(content):
+    if 'options' in content:
+        svg_text = create_qr_code(link=content['link'], options=content['options'])
+    else:
+        svg_text = create_qr_code(link=content['link'])
+    return svg_text
 
 
 @app.route('/png', methods=['POST'])
@@ -53,7 +59,7 @@ def png_qr_code():
 
     logger.info('Create QR Code with content: ' + content['link'])
 
-    svg_text = create_qr_code(link=content['link'])
+    svg_text = create_svg_text(content)
     png_image = svg2png(bytestring=svg_text, dpi=300, output_width=1000, output_height=1000)
 
     return png_image

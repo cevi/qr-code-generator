@@ -38,8 +38,16 @@ Currently, the following endpoints are available:
 
 Both endpoints queried using a POST request. With a JSON body containing the qr code parameters:
 
-```json
+```yaml
 {
-  "link": "https://link/to/your/url"
+  
+  // always required
+  "link": "https://link/to/your/url", 
+  
+  // optional parameters for the QR code
+  "options": {
+    "color-scheme": "cevi"  // default is "cevi", other options are "black" and "white"
+  }
+  
 }
 ```
