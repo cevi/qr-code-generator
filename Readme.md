@@ -1,27 +1,45 @@
 # QR Code Generator mit Cevi Logo
 
-Dies ist ein einfaches python script, dass QR Codes generiert und in einer SVG Datei speichert.
+Dies ist eine einfache API, die es erlaubt, QR-Codes mit dem Cevi-Logo zu erstellen.
+QR Codes können als PNG oder SVG erstellt werden und sind in den Farben des Cevi-Logo eingefärbt.
+
+## Beispiel eines Cevi-QR-Codes
+
+Die API erstellt QR-Code, die wie folgt aussehen:
 
 ![Beispiel QR Code](./docu/example_qr_code.png)
 
-## ToDo's
+## Open ToDo's
 
-- [ ] Build simple webpage as frontend
-- [ ] add filter for valid webpages, if needed??
+- [ ] Build simple Webpage as frontend
+- [ ] add filter for valid URLs, if needed??
 - [ ] host on [qr.cevi.tools](qr.cevi.tools)
-- [ ] add png endpoint, currently only svg is supported
 
 ## How to use?
 
-Start the backend docker container using
+You can start the backend container with the following command:
 
 ```bash 
-docker-compose up
+docker-compose up --build
 ```
 
-Then you can fetch a QR code using the following command:
+Then you can interact with the API using the following command:
 
 ```bash
-curl --header "Content-Type: application/json"   --request POST   --data '{"link":"https://cevi.ch"}'   http://localhost:5000 > logo.svg
+curl --header "Content-Type: application/json"   --request POST   --data '{"link":"https://cevi.ch"}'   http://localhost:5000/svg > logo.svg
 ```
 
+### Available Endpoints
+
+Currently, the following endpoints are available:
+
+- `/svg`: Generates a QR Code and returns it as a string forming an SVG
+- `/png`: Generates a QR Code and returns it as a byte stream
+
+Both endpoints queried using a POST request. With a JSON body containing the qr code parameters:
+
+```json
+{
+  "link": "https://link/to/your/url"
+}
+```

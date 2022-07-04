@@ -4,5 +4,9 @@ services:
 
   backend:
     build: backend/.
+
+    environment:
+      DEBUG: 1
+
     ports:
       - "5000:5000"
