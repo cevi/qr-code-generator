@@ -11,6 +11,7 @@ export class AppComponent {
   qr_link: string = "https://cevi.ch";
   png_src: SafeUrl = "assets/qr_code.png";
   svg_src: SafeUrl = "assets/qr_code.svg";
+  color: string = 'cevi';
 
   constructor(private sanitizer: DomSanitizer) {
   }
@@ -23,7 +24,7 @@ export class AppComponent {
 
     console.log('Link: ' + this.qr_link);
 
-    let settings = {"link": this.qr_link};
+    let settings = {"link": this.qr_link, "options": {"color_scheme": this.color}};
 
     fetch("http://localhost:5000/png", {
 
@@ -66,5 +67,6 @@ export class AppComponent {
 
 
   }
+
 
 }

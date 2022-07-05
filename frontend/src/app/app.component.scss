@@ -1,7 +1,23 @@
 
- #qr-code {
-   width: 250px;
-   height: 250px;
-   background-size: 250px;
-   display: block;
- }
+#qr-code {
+  width: 250px;
+  height: 250px;
+  background-size: 250px;
+  display: block;
+
+  margin: 12px;
+
+}
+
+
+.color-scheme-cevi {
+  background-color: #fff;
+}
+
+.color-scheme-white {
+  background-color: #000;
+}
+
+.color-scheme-black {
+  background-color: #fff;
+}

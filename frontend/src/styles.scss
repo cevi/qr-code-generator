@@ -1,1 +1,51 @@
-/* You can add global styles to this file, and also import other style files */
+
+html, body {
+  margin: 0;
+  padding: 0;
+
+}
+
+.logowrapper {
+
+  position: fixed;
+  background: #c41333;
+  width: calc(100vw - 24px);
+  top: 0;
+  z-index: 100;
+  display: flex;
+  align-items: center;
+  flex-grow: 100;
+  padding: 12px;
+  max-height: 40px;
+  height: 40px;
+  justify-content: flex-end;
+
+}
+
+.logo {
+  display: flex;
+  justify-content: flex-end;
+  align-items: center;
+}
+
+.logo .image {
+
+  display: block;
+  max-height: 40px;
+  max-width: 100%;
+  height: auto;
+  width: auto;
+
+}
+
+app-root {
+  margin: 120px 25px;
+  display: block;
+}
+
+h1, h2, h3, h4, h5, h6 {
+  font-family: "Montserrat",sans-serif;
+  text-transform: uppercase;
+  font-weight: 700;
+  letter-spacing: 1px;
+}
