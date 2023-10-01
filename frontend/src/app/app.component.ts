@@ -26,43 +26,31 @@ export class AppComponent {
 
     let settings = {"link": this.qr_link, "options": {"color_scheme": this.color}};
 
-    fetch("http://localhost:5000/png", {
-
+    fetch("https://qr.cevi.tools/png", {
       method: "POST",
       headers: {'Content-Type': 'application/json'},
       body: JSON.stringify(settings)
 
     }).then(res => {
-
-      console.log("Request complete! response:", res);
       return res.arrayBuffer();
 
     }).then(png => {
-
       const blob = new Blob([png], {'type': 'image/png'});
-      console.log("Blob:", blob);
       this.png_src = this.getSantizeUrl(URL.createObjectURL(blob));
-
     });
 
 
     fetch("http://localhost:5000/svg", {
-
       method: "POST",
       headers: {'Content-Type': 'application/json'},
       body: JSON.stringify(settings)
 
     }).then(res => {
-
-      console.log("Request complete! response:", res);
       return res.arrayBuffer();
 
     }).then(png => {
-
       const blob = new Blob([png], {'type': 'image/svg+xml'});
-      console.log("Blob:", blob);
       this.svg_src = this.getSantizeUrl(URL.createObjectURL(blob));
-
     });
 
 
