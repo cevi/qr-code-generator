@@ -21,25 +21,25 @@ logger = logging.getLogger(__name__)
 def svg_qr_code():
     """
 
-    Creates a QR code from the given link and returns it as SVG.
+    Creates a QR code from the given text and returns it as SVG.
     :return: svg as string
 
     """
 
     content = request.get_json()
 
-    if "link" not in content:
+    if "text" not in content:
         return "", 500
 
-    logger.info('Create QR Code with content: ' + content['link'])
+    logger.info('Create QR Code with content: ' + content['text'])
     return create_svg_text(content)
 
 
 def create_svg_text(content):
     if 'options' in content:
-        svg_text = create_qr_code(link=content['link'], options=content['options'])
+        svg_text = create_qr_code(link=content['text'], options=content['options'])
     else:
-        svg_text = create_qr_code(link=content['link'])
+        svg_text = create_qr_code(link=content['text'])
     return svg_text
 
 
@@ -47,17 +47,17 @@ def create_svg_text(content):
 def png_qr_code():
     """
 
-    Creates a QR code from the given link and returns it as PNG.
+    Creates a QR code from the given text and returns it as PNG.
     :return: png bytes
 
     """
 
     content = request.get_json()
 
-    if "link" not in content:
+    if "text" not in content:
         return "", 500
 
-    logger.info('Create QR Code with content: ' + content['link'])
+    logger.info('Create QR Code with content: ' + content['text'])
 
     svg_text = create_svg_text(content)
     png_image = svg2png(bytestring=svg_text, dpi=300, output_width=1000, output_height=1000)

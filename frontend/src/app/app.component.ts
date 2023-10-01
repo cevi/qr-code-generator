@@ -24,9 +24,9 @@ export class AppComponent {
 
     console.log('Link: ' + this.qr_link);
 
-    let settings = {"link": this.qr_link, "options": {"color_scheme": this.color}};
+    let settings = {"text": this.qr_link, "options": {"color_scheme": this.color}};
 
-    fetch("https://qr.cevi.tools/png", {
+    fetch("http://localhost:5000/png", {
       method: "POST",
       headers: {'Content-Type': 'application/json'},
       body: JSON.stringify(settings)
