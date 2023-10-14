@@ -1,60 +1,63 @@
-import {Component} from '@angular/core';
-import {DomSanitizer, SafeUrl} from "@angular/platform-browser";
+import { Component, OnInit } from '@angular/core';
+import { DomSanitizer, SafeUrl } from '@angular/platform-browser';
+import { ApplicationFacade } from '../application-state/application.facade';
+import { combineLatestWith, tap } from 'rxjs';
 
 @Component({
   selector: 'app-root',
   templateUrl: './app.component.html',
-  styleUrls: ['./app.component.scss']
+  styleUrls: ['./app.component.scss'],
 })
-export class AppComponent {
+export class AppComponent implements OnInit {
+  png_src: SafeUrl = 'assets/qr_code.png';
+  svg_src: SafeUrl = 'assets/qr_code.svg';
 
-  qr_link: string = "https://cevi.ch";
-  png_src: SafeUrl = "assets/qr_code.png";
-  svg_src: SafeUrl = "assets/qr_code.svg";
-  color: string = 'cevi';
-
-  constructor(private sanitizer: DomSanitizer) {
-  }
+  constructor(
+    private sanitizer: DomSanitizer,
+    readonly applicationFacade: ApplicationFacade,
+  ) {}
 
   public getSantizeUrl(url: string) {
     return this.sanitizer.bypassSecurityTrustResourceUrl(url);
   }
 
-  onLinkChange() {
+  generateQrCode(content: string, color: string): void {
+    let settings = { text: content, options: { color_scheme: color } };
+    fetch('http://localhost:5080/png', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(settings),
+    })
+      .then((res) => {
+        return res.arrayBuffer();
+      })
+      .then((png) => {
+        const blob = new Blob([png], { type: 'image/png' });
+        this.png_src = this.getSantizeUrl(URL.createObjectURL(blob));
+      });
 
-    console.log('Link: ' + this.qr_link);
-
-    let settings = {"text": this.qr_link, "options": {"color_scheme": this.color}};
-
-    fetch("http://localhost:5000/png", {
-      method: "POST",
-      headers: {'Content-Type': 'application/json'},
-      body: JSON.stringify(settings)
-
-    }).then(res => {
-      return res.arrayBuffer();
-
-    }).then(png => {
-      const blob = new Blob([png], {'type': 'image/png'});
-      this.png_src = this.getSantizeUrl(URL.createObjectURL(blob));
-    });
-
-
-    fetch("http://localhost:5000/svg", {
-      method: "POST",
-      headers: {'Content-Type': 'application/json'},
-      body: JSON.stringify(settings)
-
-    }).then(res => {
-      return res.arrayBuffer();
-
-    }).then(png => {
-      const blob = new Blob([png], {'type': 'image/svg+xml'});
-      this.svg_src = this.getSantizeUrl(URL.createObjectURL(blob));
-    });
-
-
+    fetch('http://localhost:5080/svg', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(settings),
+    })
+      .then((res) => {
+        return res.arrayBuffer();
+      })
+      .then((png) => {
+        const blob = new Blob([png], { type: 'image/svg+xml' });
+        this.svg_src = this.getSantizeUrl(URL.createObjectURL(blob));
+      });
   }
 
-
+  ngOnInit(): void {
+    this.applicationFacade.content
+      .pipe(
+        combineLatestWith(this.applicationFacade.color),
+        tap(([content, color]) => {
+          this.generateQrCode(content, color);
+        }),
+      )
+      .subscribe();
+  }
 }

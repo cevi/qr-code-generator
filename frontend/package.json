@@ -1,6 +1,6 @@
 {
   "name": "qr-code-generator",
-  "version": "0.0.0",
+  "version": "1.0.1",
   "scripts": {
     "ng": "ng",
     "start": "ng serve",
@@ -19,14 +19,20 @@
     "@angular/platform-browser": "^16.2.7",
     "@angular/platform-browser-dynamic": "^16.2.7",
     "@angular/router": "^16.2.7",
+    "@ngxs-labs/dispatch-decorator": "^5.0.0",
+    "@ngxs/logger-plugin": "^3.8.1",
+    "@ngxs/router-plugin": "^3.8.1",
+    "@ngxs/store": "^3.8.1",
     "rxjs": "~7.8.1",
     "tslib": "^2.6.2",
+    "vcard-creator": "^0.6.0",
     "zone.js": "~0.13.3"
   },
   "devDependencies": {
     "@angular-devkit/build-angular": "^16.2.4",
     "@angular/cli": "^16.2.4",
     "@angular/compiler-cli": "^16.2.7",
+    "@ngxs/devtools-plugin": "^3.8.1",
     "@types/jasmine": "~4.3.6",
     "@types/node": "^20.8.0",
     "husky": "^8.0.3",

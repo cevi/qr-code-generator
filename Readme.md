@@ -9,10 +9,6 @@ Die API erstellt QR-Code, die wie folgt aussehen:
 
 ![Beispiel QR Code](./docu/example_qr_code.png)
 
-## Open ToDo's
-
-- [ ] host on [qr.cevi.tools](qr.cevi.tools)
-
 ## How to use?
 
 You can start the backend container with the following command:
@@ -41,7 +37,7 @@ Both endpoints queried using a POST request. With a JSON body containing the qr 
 {
 
   // always required
-  "link": "https://link/to/your/url",
+  "text": "https://link/to/your/url",
 
   // optional parameters for the QR code
   "options": {
