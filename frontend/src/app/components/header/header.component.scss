@@ -2,7 +2,7 @@
     position: fixed;
     background: #c41333;
     top: 0;
-    width: 100vw;
+    width: 100%;
     z-index: 100;
     display: flex;
 }
@@ -31,19 +31,25 @@
     padding: 12px;
     padding-left: 0;
   }
-  
+
+@media screen and (max-width: 750px) {
+  h1 {
+    display: none;
+  }
+}
+
   .logo {
     display: flex;
     justify-content: flex-end;
     align-items: center;
   }
-  
+
   .logo .image {
-  
+
     display: block;
     max-height: 40px;
     max-width: 100%;
     height: auto;
     width: auto;
-  
+
   }

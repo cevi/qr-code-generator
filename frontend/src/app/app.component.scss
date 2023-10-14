@@ -1,7 +1,7 @@
 
 #qr-code {
-  width: 400px;
-  height: 400px;
+  width: 300px;
+  height: 300px;
   background-size: 400px;
   display: block;
   margin: 1rem;
@@ -26,6 +26,14 @@
   column-gap: 3rem;
   grid-template-areas: "header header"
   "left right";
+}
+
+@media screen and (max-width: 750px) {
+  .left-right-grid {
+    grid-template-areas: "header"
+    "left"
+    "right";
+  }
 }
 
 .left {
