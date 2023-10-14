@@ -4,7 +4,7 @@ import { Select } from '@ngxs/store';
 import { Observable } from 'rxjs';
 import { ApplicationState } from './application.state';
 import { SetColor, SetContent, SetType } from './application.actions';
-import { QrCodeTypes } from '../types/qr-code-types';
+import { QrCodeTypes } from '../../types/qr-code-types';
 
 @Injectable({
   providedIn: 'root',

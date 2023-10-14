@@ -1,6 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { DomSanitizer, SafeUrl } from '@angular/platform-browser';
 import { ApplicationFacade } from '../application-state/application.facade';
+import { ApplicationFacade } from './application-state/application.facade';
 import { combineLatestWith, tap } from 'rxjs';
 
 @Component({

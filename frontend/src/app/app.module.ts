@@ -3,21 +3,20 @@ import { BrowserModule } from '@angular/platform-browser';
 
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
-import { FooterComponent } from './components/footer/footer.component';
-import { HeaderComponent } from './components/header/header.component';
 import { NgxsModule } from '@ngxs/store';
 import { NgxsReduxDevtoolsPluginModule } from '@ngxs/devtools-plugin';
 import { NgxsLoggerPluginModule } from '@ngxs/logger-plugin';
 import { environment } from '../environments/environment';
 import { NgxsDispatchPluginModule } from '@ngxs-labs/dispatch-decorator';
 import { NgxsRouterPluginModule } from '@ngxs/router-plugin';
-import { ApplicationModule } from '../application-state/application.module';
-import { TypeSwitcherModule } from '../type-switcher/type-switcher.module';
-import { DesignSwitcherModule } from '../design-switcher/design-switcher.module';
-import { ButtonComponent } from '../ui/button/button.component';
+import { ApplicationModule } from './application-state/application.module';
+import { TypeSwitcherModule } from './type-switcher/type-switcher.module';
+import { DesignSwitcherModule } from './design-switcher/design-switcher.module';
+import { ButtonComponent } from './ui/button/button.component';
+import { DesignModule } from './design/design.module';
 
 @NgModule({
-  declarations: [AppComponent, FooterComponent, HeaderComponent],
+  declarations: [AppComponent],
   imports: [
     ApplicationModule,
     TypeSwitcherModule,
@@ -25,6 +24,7 @@ import { ButtonComponent } from '../ui/button/button.component';
     BrowserModule,
     AppRoutingModule,
     ButtonComponent,
+    DesignModule,
     NgxsModule.forRoot([], {
       developmentMode: !environment.production,
     }),

@@ -1,4 +1,4 @@
-import { QrCodeTypes } from '../types/qr-code-types';
+import { QrCodeTypes } from '../../types/qr-code-types';
 
 export class ApplicationModel {
   public color: string;

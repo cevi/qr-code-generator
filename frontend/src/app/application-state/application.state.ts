@@ -2,7 +2,7 @@ import { Injectable } from '@angular/core';
 import { Action, Selector, State, StateContext } from '@ngxs/store';
 import { SetColor, SetContent, SetType } from './application.actions';
 import { ApplicationModel } from './application-model';
-import { QrCodeTypes } from '../types/qr-code-types';
+import { QrCodeTypes } from '../../types/qr-code-types';
 
 const defaults: ApplicationModel = {
   color: 'cevi',
