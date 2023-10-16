@@ -1,0 +1,25 @@
+<div class="design-switcher">
+  <form *ngIf="form" [formGroup]="form">
+    <label class="container">
+      Cevi Farben
+      <input
+        formControlName="color"
+        type="radio"
+        value="cevi"
+      />
+      <span class="checkmark"></span>
+    </label>
+
+    <label class="container">
+      Schwarz
+      <input formControlName="color" type="radio" value="black" />
+      <span class="checkmark"></span>
+    </label>
+
+    <label class="container">
+      Weiss
+      <input formControlName="color" type="radio" value="white" />
+      <span class="checkmark"></span>
+    </label>
+  </form>
+</div>

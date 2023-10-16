@@ -1,19 +1,22 @@
-
-<h1>Cevi - QR-Code-Generator</h1>
-<input type="text" class="form-control" placeholder="Link" [(ngModel)]="qr_link" (input)="onLinkChange()">
-
-<img class="color-scheme-{{color}}" id="qr-code" [src]="png_src" alt="QR Code"/>
-
-<input type="radio" id="web" name="color" value="cevi" [(ngModel)]="color" (change)="onLinkChange()">
-<label class="-radio" for="web">Cevi Farben</label>
-<br>
-<input type="radio" id="rgb" name="color" value="black" [(ngModel)]="color" (change)="onLinkChange()">
-<label class="-radio" for="rgb">Schwarz</label>
-<br>
-<input type="radio" id="hex" name="color" value="white" [(ngModel)]="color" (change)="onLinkChange()">
-<label class="-radio" for="hex">Weiss</label>
-<br>
-<br>
-<a [href]="png_src" download="PNG QR Code">PNG herunterladen</a>
-<br>
-<a [href]="svg_src" download="SVG QR Code">SVG herunterladen</a>
+<app-header></app-header>
+<div class="content">
+  <div class="left-right-grid">
+    <div class="header">
+      <p>Du brauchst für einen Cevi-Anlass oder Cevi-Ausbildung einen QR. Erstelle mit diesem Formular deinen Cevi QR-Code.</p>
+    </div>
+    <div class="left">
+      <h2>Input</h2>
+      <h3>Design</h3>
+      <design-switcher></design-switcher>
+      <h3>Typ und Inhalt</h3>
+      <type-switcher></type-switcher>
+    </div>
+    <div class="right">
+      <h2>Output</h2>
+      <img [src]="png_src" alt="QR Code" class="color-scheme-{{ applicationFacade.color | async }}" id="qr-code" />
+      <a [href]="png_src" class="download" download="PNG QR Code"> PNG herunterladen </a>
+      <a [href]="svg_src" class="download" download="SVG QR Code">SVG herunterladen</a>
+    </div>
+  </div>
+</div>
+<app-footer></app-footer>

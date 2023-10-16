@@ -1,0 +1,21 @@
+<ng-container>
+  <form *ngIf="form" [formGroup]="form">
+    <text-input [control]="form.controls['firstName']" label="Vorname" placeholder="Max"></text-input>
+    <text-input [control]="form.controls['lastName']" label="Nachname" placeholder="Muster"></text-input>
+    <text-input [control]="form.controls['street']"
+      label="Strasse und Nr."
+      placeholder="Musterstrasse 1234"
+    ></text-input>
+    <text-input [control]="form.controls['zip']" label="PLZ" placeholder="1234"></text-input>
+    <text-input [control]="form.controls['city']" label="Ort" placeholder="Musterort"></text-input>
+    <text-input
+      [control]="form.controls['phoneNumber']"
+      label="Telefonnummer"
+      placeholder="+41 79 123 45 67"
+    ></text-input>
+    <text-input [control]="form.controls['mail']" label="Mail" placeholder="test@test.ch"></text-input>
+  </form>
+
+
+
+</ng-container>

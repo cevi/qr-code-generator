@@ -1,12 +1,11 @@
 
 #qr-code {
-  width: 250px;
-  height: 250px;
-  background-size: 250px;
+  width: 300px;
+  height: 300px;
+  background-size: 400px;
   display: block;
-
-  margin: 12px;
-
+  margin: 1rem;
+  margin-left: 0;
 }
 
 
@@ -20,4 +19,49 @@
 
 .color-scheme-black {
   background-color: #fff;
+}
+
+.left-right-grid {
+  display: grid;
+  column-gap: 3rem;
+  grid-template-areas: "header header"
+  "left right";
+}
+
+@media screen and (max-width: 750px) {
+  .left-right-grid {
+    grid-template-areas: "header"
+    "left"
+    "right";
+  }
+}
+
+.left {
+  grid-area: left;
+}
+
+.right {
+  grid-area: right;
+}
+
+.header {
+  grid-area: header;
+  p {
+    margin-top: 0
+    ;
+  }
+}
+
+.download {
+  font-size: 16px;
+    text-decoration: none;
+    color: white;
+    background-color: #333791;
+    display: block;
+    float: left;
+    padding: 0.75rem;
+    min-width: 5rem;
+    border: 0;
+    margin: 1rem;
+    margin-left: 0;
 }

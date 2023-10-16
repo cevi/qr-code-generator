@@ -1,0 +1,22 @@
+<select
+  (change)="onTypeSwitched($event)"
+>
+  <option value="0">Link</option>
+  <option value="1">Telefonnummer</option>
+  <option value="2">Kontakt</option>
+  <option value="3">WLAN-Zugangsdaten</option>
+</select>
+<ng-container [ngSwitch]="applicationFacade.type | async">
+  <ng-container *ngSwitchCase="types.Link">
+    <qr-code-link></qr-code-link>
+  </ng-container>
+  <ng-container *ngSwitchCase="types.Phone">
+    <qr-code-phone></qr-code-phone>
+  </ng-container>
+  <ng-container *ngSwitchCase="types.Vcard">
+    <qr-code-contact></qr-code-contact>
+  </ng-container>
+  <ng-container *ngSwitchCase="types.Wifi">
+    <qr-code-wifi></qr-code-wifi>
+  </ng-container>
+</ng-container>
