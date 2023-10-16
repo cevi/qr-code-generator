@@ -3,7 +3,7 @@
 .container {
     display: block;
     position: relative;
-    padding-left: 35px;
+    padding-left: 50px;
     margin-bottom: 12px;
     cursor: pointer;
     font-size: 22px;
@@ -12,13 +12,13 @@
     -ms-user-select: none;
     user-select: none;
   }
-  
+
   .container input {
     position: absolute;
     opacity: 0;
     cursor: pointer;
   }
-  
+
   .checkmark {
     position: absolute;
     top: 0;
@@ -27,26 +27,27 @@
     width: 25px;
     background-color: white;
     border-radius: 50%;
+    border: 3px solid #13358e;
   }
-  
+
   .container:hover input ~ .checkmark {
     background-color: #ccc;
   }
-  
+
   .container input:checked ~ .checkmark {
     background-color: #13358e;
   }
-  
+
   .checkmark:after {
     content: "";
     position: absolute;
     display: none;
   }
-  
+
   .container input:checked ~ .checkmark:after {
     display: block;
   }
-  
+
   .container .checkmark:after {
        top: 9px;
       left: 9px;
