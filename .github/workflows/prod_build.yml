@@ -1,0 +1,33 @@
+name: Production Build (Build and Push Images)
+
+on:
+  push:
+    branches:
+      - 'master'
+
+jobs:
+  prodBuild:
+    runs-on: ubuntu-latest
+    steps:
+
+      # Checkout the source code
+      - name: 🛎️ Checkout
+        uses: actions/checkout@v2
+
+      # Restores the cache if it exists.
+      - name: ⛏ Restore docker image from cache
+        uses: satackey/action-docker-layer-caching@v0.0.11
+        continue-on-error: true
+
+      - name: 🔐 Login to Docker Hub
+        uses: docker/login-action@v2
+        with:
+          registry: registry.cevi.tools
+          username: ${{ secrets.REGESTRY_USERNAME }}
+          password: ${{ secrets.REGESTRY_PASSWORD }}
+
+      - name: 🏗️ Build the stack
+        run: docker-compose -f docker-compose.yml build
+
+      - name: 🚀 Push containers to registry
+        run: docker-compose -f docker-compose.yml push
