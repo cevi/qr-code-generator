@@ -2,6 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { DomSanitizer, SafeUrl } from '@angular/platform-browser';
 import { ApplicationFacade } from './application-state/application.facade';
 import { combineLatestWith, tap } from 'rxjs';
+import { environment as env } from '../environments/environment';
 
 @Component({
   selector: 'app-root',
@@ -23,7 +24,8 @@ export class AppComponent implements OnInit {
 
   generateQrCode(content: string, color: string): void {
     let settings = { text: content, options: { color_scheme: color } };
-    fetch('http://localhost:5080/png', {
+
+    fetch(`${env.backend_url}/png`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify(settings),
@@ -36,7 +38,7 @@ export class AppComponent implements OnInit {
         this.png_src = this.getSantizeUrl(URL.createObjectURL(blob));
       });
 
-    fetch('http://localhost:5080/svg', {
+    fetch(`${env.backend_url}/svg`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify(settings),

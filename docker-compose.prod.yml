@@ -1,0 +1,12 @@
+services:
+
+  backend:
+    image: registry.cevi.tools/cevi/qr-backend:latest
+
+  frontend:
+    image: registry.cevi.tools/cevi/qr-frontend:latest
+    build:
+      args:
+        - configuration=production
+
+
