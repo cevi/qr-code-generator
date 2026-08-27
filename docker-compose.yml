@@ -8,6 +8,10 @@ services:
 
     environment:
       DEBUG: 1
+      # Cevi.Tools URL shortener. Without a key the /shorten endpoint answers
+      # 503 and the frontend reports that shortening is unavailable.
+      SHORTENER_API_KEY: ${SHORTENER_API_KEY:-}
+      SHORTENER_API_URL: ${SHORTENER_API_URL:-https://backend-go.cevi.tools/api/v2/links}
 
   frontend:
     build: frontend/.

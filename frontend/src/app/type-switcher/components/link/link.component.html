@@ -1,3 +1,12 @@
 <form *ngIf="form" [formGroup]="form">
   <text-input [control]="form.controls['url']" label="Link zur Webseite" placeholder="https://cevi.ch"></text-input>
+  <div class="shortener">
+    <button (click)="shortenUrl()" [disabled]="shortening || url === ''" class="shorten-button" type="button">
+      {{ shortening ? 'Link wird gekürzt …' : 'Link kürzen' }}
+    </button>
+    <p *ngIf="shortenedFrom && !shortenError" class="shorten-hint">
+      Gekürzt mit dem Cevi.Tools URL-Shortener. Der QR-Code zeigt jetzt auf den kurzen Link.
+    </p>
+    <p *ngIf="shortenError" class="shorten-error">{{ shortenError }}</p>
+  </div>
 </form>
