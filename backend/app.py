@@ -1,8 +1,9 @@
 import logging
 import os
 
+import requests
 from cairosvg import svg2png
-from flask import Flask, request
+from flask import Flask, jsonify, request
 from flask_cors import CORS
 
 from log_helper import setup_recursive_logger
@@ -15,6 +16,15 @@ app = Flask(__name__)
 cors = CORS(app, resources={r"/*": {"origins": "*"}})
 
 logger = logging.getLogger(__name__)
+
+# Cevi.Tools URL shortener (a kutt.it instance). The API key is read from the
+# environment and never leaves the backend, so it is not exposed to the browser.
+SHORTENER_API_URL = os.environ.get("SHORTENER_API_URL", "https://backend-go.cevi.tools/api/v2/links")
+SHORTENER_DOMAIN = os.environ.get("SHORTENER_DOMAIN", "go.cevi.tools")
+SHORTENER_API_KEY = os.environ.get("SHORTENER_API_KEY", "")
+SHORTENER_TIMEOUT = int(os.environ.get("SHORTENER_TIMEOUT", 10))
+
+MAX_TARGET_LENGTH = 2048
 
 
 @app.route('/svg', methods=['POST'])
@@ -63,6 +73,84 @@ def png_qr_code():
     png_image = svg2png(bytestring=svg_text, dpi=300, output_width=1000, output_height=1000)
 
     return png_image
+
+
+@app.route('/shorten', methods=['POST'])
+def shorten_url():
+    """
+
+    Shortens the given URL with the Cevi.Tools URL shortener and returns the
+    short link. The QR code itself is still created through /svg and /png; this
+    endpoint only exchanges a long URL for a short one.
+    :return: {"link": "https://go.cevi.tools/<slug>"}
+
+    """
+
+    content = request.get_json(silent=True) or {}
+
+    if "text" not in content:
+        return jsonify({"error": "Es wurde keine URL angegeben."}), 400
+
+    target = str(content["text"]).strip()
+
+    if not target:
+        return jsonify({"error": "Es wurde keine URL angegeben."}), 400
+
+    if len(target) > MAX_TARGET_LENGTH:
+        return jsonify({"error": "Die angegebene URL ist zu lang."}), 400
+
+    if not target.startswith(("http://", "https://")):
+        return jsonify({"error": "Es können nur http- und https-Links gekürzt werden."}), 400
+
+    if not SHORTENER_API_KEY:
+        logger.warning('Shortening requested but SHORTENER_API_KEY is not configured')
+        return jsonify({"error": "Der Kürzungsdienst ist nicht konfiguriert."}), 503
+
+    logger.info('Shorten URL: ' + target)
+
+    try:
+        response = requests.post(
+            SHORTENER_API_URL,
+            headers={"x-api-key": SHORTENER_API_KEY, "Content-Type": "application/json"},
+            json={
+                "target": target,
+                "domain": SHORTENER_DOMAIN,
+                "description": "Erstellt mit dem Cevi QR-Code-Generator",
+                # Hand back the existing link when the same target was shortened
+                # before, so repeated clicks do not burn through the daily quota.
+                "reuse": True,
+            },
+            timeout=SHORTENER_TIMEOUT,
+        )
+    except requests.RequestException as error:
+        logger.error('Could not reach the URL shortener: ' + str(error))
+        return jsonify({"error": "Der Kürzungsdienst ist nicht erreichbar."}), 502
+
+    if not response.ok:
+        logger.error('URL shortener responded with status ' + str(response.status_code))
+        return jsonify({"error": _shortener_error(response)}), 502
+
+    link = (response.json() or {}).get("link")
+
+    if not link:
+        logger.error('URL shortener returned no link')
+        return jsonify({"error": "Der Kürzungsdienst hat keinen Link zurückgegeben."}), 502
+
+    return jsonify({"link": link})
+
+
+def _shortener_error(response):
+    """Pull the shortener's own error message out of the response, if it has one."""
+
+    try:
+        error = (response.json() or {}).get("error")
+    except ValueError:
+        error = None
+
+    if error:
+        return error
+
+    return "Der Kürzungsdienst meldete den Status " + str(response.status_code) + "."
 
 
 if __name__ == "__main__":

@@ -1,0 +1,28 @@
+.shortener {
+  margin-bottom: 1.429rem;
+}
+
+.shorten-button {
+  font-size: 16px;
+  color: white;
+  background-color: #333791;
+  padding: 0.75rem;
+  min-width: 5rem;
+  border: 0;
+  cursor: pointer;
+}
+
+.shorten-button:disabled {
+  background-color: #9a9cc4;
+  cursor: default;
+}
+
+.shorten-hint,
+.shorten-error {
+  margin-bottom: 0;
+  max-width: 30rem;
+}
+
+.shorten-error {
+  color: #c41333;
+}
