@@ -52,16 +52,21 @@
   }
 }
 
+.downloads {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 1rem;
+  margin: 1rem 0;
+}
+
 .download {
   font-size: 16px;
-    text-decoration: none;
-    color: white;
-    background-color: #333791;
-    display: block;
-    float: left;
-    padding: 0.75rem;
-    min-width: 5rem;
-    border: 0;
-    margin: 1rem;
-    margin-left: 0;
+  text-decoration: none;
+  color: white;
+  background-color: #333791;
+  display: block;
+  padding: 0.75rem;
+  min-width: 5rem;
+  border: 0;
+  text-align: center;
 }

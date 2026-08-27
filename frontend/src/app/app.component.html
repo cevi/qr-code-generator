@@ -14,8 +14,10 @@
     <div class="right">
       <h2>Output</h2>
       <img [src]="png_src" alt="QR Code" class="color-scheme-{{ applicationFacade.color | async }}" id="qr-code" />
-      <a [href]="png_src" class="download" download="PNG QR Code"> PNG herunterladen </a>
-      <a [href]="svg_src" class="download" download="SVG QR Code">SVG herunterladen</a>
+      <div class="downloads">
+        <a [href]="png_src" class="download" download="PNG QR Code">PNG herunterladen</a>
+        <a [href]="svg_src" class="download" download="SVG QR Code">SVG herunterladen</a>
+      </div>
     </div>
   </div>
 </div>

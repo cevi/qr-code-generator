@@ -10,12 +10,18 @@ html, body {
 
 }
 
+app-root {
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+}
+
 .content {
   margin-top: 4rem;
-  display: block;
+  flex: 1 0 auto;
+  box-sizing: border-box;
   background-color: whitesmoke;
   padding: 2rem;
-  height: calc(100vh - 8rem);
 }
 
 h1, h2, h3, h4, h5, h6 {
