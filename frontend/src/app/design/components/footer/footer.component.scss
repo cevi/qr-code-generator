@@ -1,9 +1,18 @@
-footer {
-    position: fixed;
+/* Sticky rather than fixed: the host keeps its slot in the flex column, so the
+   content above it always has room and the footer still rides the viewport
+   bottom while scrolling. */
+:host {
+    display: block;
+    position: sticky;
     bottom: 0;
+    z-index: 100;
+}
+
+footer {
     background-color: #13358e;
     padding: 1rem;
     width: 100%;
+    box-sizing: border-box;
     color: white;
 }
 
