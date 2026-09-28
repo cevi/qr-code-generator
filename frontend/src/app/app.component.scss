@@ -8,6 +8,31 @@
   margin-left: 0;
 }
 
+.error-container {
+  margin: 1rem 0;
+  padding: 1.25rem;
+  background-color: #ffffff;
+  border-left: 5px solid #c41333;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.08);
+  max-width: 300px;
+
+  .error-title {
+    font-family: "Montserrat Bold", sans-serif;
+    font-size: 14px;
+    color: #c41333;
+    margin: 0 0 0.5rem 0;
+    text-transform: uppercase;
+  }
+
+  .error-text {
+    font-family: "Montserrat Regular", sans-serif;
+    font-size: 13px;
+    color: #333333;
+    margin: 0;
+    line-height: 1.4;
+  }
+}
+
 
 .color-scheme-cevi {
   background-color: #fff;

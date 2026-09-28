@@ -11,11 +11,16 @@ import { environment as env } from '../../environments/environment';
 })
 export class ShortenerService {
   async shorten(url: string): Promise<string> {
-    const response = await fetch(`${env.backend_url}/shorten`, {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ text: url }),
-    });
+    let response: Response;
+    try {
+      response = await fetch(`${env.backend_url}/shorten`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ text: url }),
+      });
+    } catch {
+      throw new Error('Das Backend ist nicht erreichbar. Bitte überprüfe die Verbindung zum Server.');
+    }
 
     const body = await response.json().catch(() => null);
 
