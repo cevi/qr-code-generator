@@ -1,16 +1,19 @@
 import logging
 import os
+import re
+import unicodedata
+from urllib.parse import quote
 
 import requests
 from cairosvg import svg2png
-from flask import Flask, jsonify, request
+from flask import Flask, jsonify, request, Response
 from flask_cors import CORS
 
 from log_helper import setup_recursive_logger
 
 setup_recursive_logger(logging.INFO)
 
-from generator import create_qr_code
+from generator import create_qr_code, create_pdf
 
 app = Flask(__name__)
 cors = CORS(app, resources={r"/*": {"origins": "*"}})
@@ -73,6 +76,48 @@ def png_qr_code():
     png_image = svg2png(bytestring=svg_text, dpi=300, output_width=1000, output_height=1000)
 
     return png_image
+
+
+@app.route('/pdf', methods=['POST'])
+def pdf_qr_code():
+    """
+
+    Creates an A4 PDF from the given text, optional title, optional subtitle, and returns it as PDF bytes.
+    :return: pdf bytes
+
+    """
+
+    content = request.get_json()
+
+    if "text" not in content:
+        return "", 500
+
+    logger.info('Create PDF QR Code with content: ' + content['text'])
+
+    title = content.get('title', '')
+    subtitle = content.get('subtitle', '')
+    show_url = content.get('show_url', True)
+    options = content.get('options')
+    pdf_bytes = create_pdf(link=content['text'], title=title, subtitle=subtitle, show_url=show_url, options=options)
+
+    raw_name = (title or subtitle or "cevi-qr-code").strip()
+
+    # ASCII fallback for latin-1 WSGI header compliance
+    ascii_clean = unicodedata.normalize('NFKD', raw_name).encode('ascii', 'ignore').decode('ascii')
+    ascii_clean = re.sub(r'[\\/*?:"<>|]', '', ascii_clean).strip().replace(' ', '-').lower()
+    ascii_clean = re.sub(r'-+', '-', ascii_clean).strip('-')
+    ascii_name = ascii_clean or "cevi-qr-code"
+
+    # RFC 5987 / RFC 6266 UTF-8 encoded filename* supporting emojis and umlauts
+    clean_utf8_name = re.sub(r'[\\/*?:"<>|]', '', raw_name).strip().replace(' ', '-')
+    clean_utf8_name = re.sub(r'-+', '-', clean_utf8_name).strip('-') or "cevi-qr-code"
+    encoded_name = quote(f"{clean_utf8_name}.pdf")
+
+    return Response(
+        pdf_bytes,
+        mimetype='application/pdf',
+        headers={'Content-Disposition': f'inline; filename="{ascii_name}.pdf"; filename*=UTF-8\'\'{encoded_name}'}
+    )
 
 
 @app.route('/shorten', methods=['POST'])

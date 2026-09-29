@@ -30,15 +30,23 @@ Currently, the following endpoints are available:
 
 - `/svg`: Generates a QR Code and returns it as a string forming an SVG
 - `/png`: Generates a QR Code and returns it as a byte stream
+- `/pdf`: Generates an A4 PDF with the QR Code, optional title, optional subtitle, and the URL below
 - `/shorten`: Shortens a URL with the Cevi.Tools URL shortener (see below)
 
-All endpoints are queried using a POST request. `/svg` and `/png` take a JSON body containing the qr code parameters:
+All endpoints are queried using a POST request. `/svg`, `/png`, and `/pdf` take a JSON body containing the qr code parameters:
 
 ```yaml
 {
 
   // always required
   "text": "https://link/to/your/url",
+
+  // optional title and subtitle for the A4 PDF printout (used by /pdf)
+  "title": "Optionaler Titel",
+  "subtitle": "Optionaler Untertitel",
+
+  // optional flag to show the URL below the QR code (used by /pdf, default: true)
+  "show_url": true,
 
   // optional parameters for the QR code
   "options": {
