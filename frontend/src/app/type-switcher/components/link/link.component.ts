@@ -11,6 +11,9 @@ import { ShortenerService } from '../../../shortener/shortener.service';
 })
 export class LinkComponent implements OnInit, OnDestroy {
   form: FormGroup;
+  // Kept out of the form group on purpose: the group's value changes drive
+  // the QR code content, and typing a slug must not regenerate the code.
+  slugControl = new FormControl('', { nonNullable: true });
   shortening = false;
   shortenedFrom = '';
   shortenError = '';
@@ -33,10 +36,20 @@ export class LinkComponent implements OnInit, OnDestroy {
         }),
       )
       .subscribe();
+    // An error about the previous slug no longer applies once it is edited.
+    this.slugControl.valueChanges.pipe(takeUntil(this.destroy$)).subscribe(() => (this.shortenError = ''));
   }
 
   get url(): string {
     return this.form?.controls['url'].value?.trim() ?? '';
+  }
+
+  get slug(): string {
+    return this.slugControl.value.trim();
+  }
+
+  get slugInvalid(): boolean {
+    return this.slug !== '' && !/^[A-Za-z0-9_-]{1,64}$/.test(this.slug);
   }
 
   /**
@@ -46,7 +59,7 @@ export class LinkComponent implements OnInit, OnDestroy {
   async shortenUrl(): Promise<void> {
     const target = this.url;
 
-    if (this.shortening || target === '') {
+    if (this.shortening || target === '' || this.slugInvalid) {
       return;
     }
 
@@ -54,11 +67,13 @@ export class LinkComponent implements OnInit, OnDestroy {
     this.shortenError = '';
 
     try {
-      const link = await this.shortener.shorten(target);
+      const link = await this.shortener.shorten(target, this.slug);
       // Writing the short link back into the form regenerates the QR code,
       // so the code encodes the short URL from here on.
       this.form.controls['url'].setValue(link);
       this.shortenedFrom = target;
+      // The slug is taken now; a second click would only report it as in use.
+      this.slugControl.setValue('');
     } catch (error) {
       this.shortenError = error instanceof Error ? error.message : 'Der Link konnte nicht gekürzt werden.';
     } finally {

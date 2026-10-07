@@ -18,9 +18,17 @@
 }
 
 .shorten-hint,
-.shorten-error {
+.shorten-error,
+.slug-hint {
   margin-bottom: 0;
   max-width: 30rem;
+}
+
+// Sits directly under the slug input, which brings its own bottom margin.
+.slug-hint {
+  margin-top: -0.9rem;
+  margin-bottom: 1rem;
+  font-size: 12px;
 }
 
 .shorten-error {

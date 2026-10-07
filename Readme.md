@@ -74,6 +74,18 @@ curl --header "Content-Type: application/json" \
 # {"link": "https://go.cevi.tools/AbC123"}
 ```
 
+An optional `slug` picks the path of the short link instead of a random one.
+The form offers it as **Eigener Kurzname**. It may contain letters, digits,
+dashes and underscores (64 characters at most), and the request fails if the
+slug is already taken:
+
+```bash
+curl --header "Content-Type: application/json" \
+  --request POST --data '{"text":"https://cevi.ch/a/very/long/path","slug":"sommerlager-2027"}' \
+  http://localhost:5080/shorten
+# {"link": "https://go.cevi.tools/sommerlager-2027"}
+```
+
 The backend reads the following environment variables:
 
 | Variable | Default | Description |
