@@ -39,13 +39,17 @@ def svg_qr_code():
 
     """
 
-    content = request.get_json()
+    content = request.get_json(silent=True) or {}
 
     if "text" not in content:
-        return "", 500
+        return jsonify({"error": "Es wurde kein Text für den QR-Code angegeben."}), 400
 
-    logger.info('Create QR Code with content: ' + content['text'])
-    return create_svg_text(content)
+    logger.info('Create QR Code with content: ' + str(content['text']))
+    try:
+        return create_svg_text(content)
+    except Exception as error:
+        logger.error('Could not generate SVG QR Code: ' + str(error))
+        return jsonify({"error": f"Der QR-Code konnte nicht generiert werden: {error}"}), 500
 
 
 def create_svg_text(content):
@@ -65,17 +69,20 @@ def png_qr_code():
 
     """
 
-    content = request.get_json()
+    content = request.get_json(silent=True) or {}
 
     if "text" not in content:
-        return "", 500
+        return jsonify({"error": "Es wurde kein Text für den QR-Code angegeben."}), 400
 
-    logger.info('Create QR Code with content: ' + content['text'])
+    logger.info('Create QR Code with content: ' + str(content['text']))
 
-    svg_text = create_svg_text(content)
-    png_image = svg2png(bytestring=svg_text, dpi=300, output_width=1000, output_height=1000)
-
-    return png_image
+    try:
+        svg_text = create_svg_text(content)
+        png_image = svg2png(bytestring=svg_text, dpi=300, output_width=1000, output_height=1000)
+        return png_image
+    except Exception as error:
+        logger.error('Could not generate PNG QR Code: ' + str(error))
+        return jsonify({"error": f"Der QR-Code konnte nicht generiert werden: {error}"}), 500
 
 
 @app.route('/pdf', methods=['POST'])
@@ -87,18 +94,22 @@ def pdf_qr_code():
 
     """
 
-    content = request.get_json()
+    content = request.get_json(silent=True) or {}
 
     if "text" not in content:
-        return "", 500
+        return jsonify({"error": "Es wurde kein Text für den QR-Code angegeben."}), 400
 
-    logger.info('Create PDF QR Code with content: ' + content['text'])
+    logger.info('Create PDF QR Code with content: ' + str(content['text']))
 
     title = content.get('title', '')
     subtitle = content.get('subtitle', '')
     show_url = content.get('show_url', True)
     options = content.get('options')
-    pdf_bytes = create_pdf(link=content['text'], title=title, subtitle=subtitle, show_url=show_url, options=options)
+    try:
+        pdf_bytes = create_pdf(link=content['text'], title=title, subtitle=subtitle, show_url=show_url, options=options)
+    except Exception as error:
+        logger.error('Could not generate PDF QR Code: ' + str(error))
+        return jsonify({"error": f"Der QR-Code konnte nicht generiert werden: {error}"}), 500
 
     raw_name = (title or subtitle or "cevi-qr-code").strip()
 
