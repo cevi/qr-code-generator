@@ -20,10 +20,50 @@
       <ng-container *ngIf="!errorMessage">
         <img [src]="png_src" alt="QR Code" class="color-scheme-{{ applicationFacade.color | async }}" id="qr-code" />
         <div class="downloads">
-          <a [href]="png_src" class="download" download="PNG QR Code">PNG herunterladen</a>
-          <a [href]="svg_src" class="download" download="SVG QR Code">SVG herunterladen</a>
+          <a [href]="png_src" class="download" [download]="pngDownloadFilename">PNG herunterladen</a>
+          <a [href]="svg_src" class="download" [download]="svgDownloadFilename">SVG herunterladen</a>
+          <a *ngIf="pdf_src" [href]="pdf_src" class="download desktop-only" [download]="pdfDownloadFilename">PDF herunterladen (A4)</a>
         </div>
       </ng-container>
+    </div>
+    <div class="pdf">
+      <h3>PDF-Druck</h3>
+      <div class="pdf-options-section">
+        <div class="field">
+          <label for="pdf-title">Titel für A4-PDF (optional)</label>
+          <input
+            id="pdf-title"
+            type="text"
+            [value]="pdfTitle"
+            (input)="onTitleInput($event)"
+            placeholder="z. B. WLAN im Cevi-Huus"
+          />
+        </div>
+        <div class="field">
+          <label for="pdf-subtitle">Untertitel für A4-PDF (optional)</label>
+          <input
+            id="pdf-subtitle"
+            type="text"
+            [value]="pdfSubtitle"
+            (input)="onSubtitleInput($event)"
+            placeholder="z. B. Scanne den QR-Code für weitere Informationen"
+          />
+        </div>
+        <div class="checkbox-field">
+          <label class="checkbox-label" for="pdf-show-url">
+            <input
+              id="pdf-show-url"
+              type="checkbox"
+              [checked]="showPdfUrl"
+              (change)="onShowPdfUrlChange($event)"
+            />
+            <span>URL unter dem QR-Code anzeigen</span>
+          </label>
+        </div>
+      </div>
+      <div *ngIf="pdf_src && !errorMessage" class="downloads mobile-only">
+        <a [href]="pdf_src" class="download" [download]="pdfDownloadFilename">PDF herunterladen (A4)</a>
+      </div>
     </div>
   </div>
 </div>
