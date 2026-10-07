@@ -1,7 +1,23 @@
 <form *ngIf="form" [formGroup]="form">
   <text-input [control]="form.controls['url']" label="Link zur Webseite" placeholder="https://cevi.ch"></text-input>
   <div class="shortener">
-    <button (click)="shortenUrl()" [disabled]="shortening || url === ''" class="shorten-button" type="button">
+    <text-input
+      [control]="slugControl"
+      label="Eigener Kurzname (optional)"
+      placeholder="z. B. sommerlager-2027"
+    ></text-input>
+    <p *ngIf="!slugInvalid" class="slug-hint">
+      Ergibt go.cevi.tools/{{ slug || '…' }} – ohne Kurzname wird ein zufälliger Link erstellt.
+    </p>
+    <p *ngIf="slugInvalid" class="slug-hint shorten-error">
+      Erlaubt sind Buchstaben, Ziffern, Binde- und Unterstriche (höchstens 64 Zeichen).
+    </p>
+    <button
+      (click)="shortenUrl()"
+      [disabled]="shortening || url === '' || slugInvalid"
+      class="shorten-button"
+      type="button"
+    >
       {{ shortening ? 'Link wird gekürzt …' : 'Link kürzen' }}
     </button>
     <p *ngIf="shortenedFrom && !shortenError" class="shorten-hint">

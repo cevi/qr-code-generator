@@ -10,13 +10,16 @@ import { environment as env } from '../../environments/environment';
   providedIn: 'root',
 })
 export class ShortenerService {
-  async shorten(url: string): Promise<string> {
+  /**
+   * @param slug optional path of the short link; the shortener picks a random one when it is empty
+   */
+  async shorten(url: string, slug: string = ''): Promise<string> {
     let response: Response;
     try {
       response = await fetch(`${env.backend_url}/shorten`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ text: url }),
+        body: JSON.stringify(slug ? { text: url, slug } : { text: url }),
       });
     } catch {
       throw new Error('Das Backend ist nicht erreichbar. Bitte überprüfe die Verbindung zum Server.');

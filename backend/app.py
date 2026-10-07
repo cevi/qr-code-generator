@@ -1,6 +1,7 @@
 import logging
 import os
 import re
+import time
 import unicodedata
 from urllib.parse import quote
 
@@ -28,6 +29,15 @@ SHORTENER_API_KEY = os.environ.get("SHORTENER_API_KEY", "")
 SHORTENER_TIMEOUT = int(os.environ.get("SHORTENER_TIMEOUT", 10))
 
 MAX_TARGET_LENGTH = 2048
+
+# Kutt accepts letters, digits, dashes and underscores for a custom address.
+SLUG_PATTERN = re.compile(r'^[A-Za-z0-9_-]{1,64}$')
+
+SHORTENER_ERROR_TRANSLATIONS = {
+    "Custom URL is already in use.": "Dieser Kurzname ist bereits vergeben.",
+    "Custom URL is not valid.": "Dieser Kurzname ist ungültig.",
+    "Invalid custom URL": "Dieser Kurzname ist ungültig.",
+}
 
 
 @app.route('/svg', methods=['POST'])
@@ -137,7 +147,8 @@ def shorten_url():
 
     Shortens the given URL with the Cevi.Tools URL shortener and returns the
     short link. The QR code itself is still created through /svg and /png; this
-    endpoint only exchanges a long URL for a short one.
+    endpoint only exchanges a long URL for a short one. An optional "slug"
+    picks the short link's path instead of a random one.
     :return: {"link": "https://go.cevi.tools/<slug>"}
 
     """
@@ -158,33 +169,44 @@ def shorten_url():
     if not target.startswith(("http://", "https://")):
         return jsonify({"error": "Es können nur http- und https-Links gekürzt werden."}), 400
 
+    slug = str(content.get("slug") or "").strip()
+
+    if slug and not SLUG_PATTERN.match(slug):
+        return jsonify({"error": "Der Kurzname darf nur Buchstaben, Ziffern, Binde- und Unterstriche enthalten "
+                                 "und höchstens 64 Zeichen lang sein."}), 400
+
     if not SHORTENER_API_KEY:
         logger.warning('Shortening requested but SHORTENER_API_KEY is not configured')
         return jsonify({"error": "Der Kürzungsdienst ist nicht konfiguriert."}), 503
 
-    logger.info('Shorten URL: ' + target)
+    logger.info('Shorten URL: ' + target + (' as ' + slug if slug else ''))
+
+    payload = {
+        "target": target,
+        "domain": SHORTENER_DOMAIN,
+        "description": "Erstellt mit dem Cevi QR-Code-Generator",
+        # Hand back the existing link when the same target was shortened
+        # before, so repeated clicks do not burn through the daily quota.
+        "reuse": True,
+    }
+
+    if slug:
+        payload["customurl"] = slug
+        # With reuse the shortener would return the target's existing link
+        # and silently ignore the requested slug.
+        payload["reuse"] = False
 
     try:
-        response = requests.post(
-            SHORTENER_API_URL,
-            headers={"x-api-key": SHORTENER_API_KEY, "Content-Type": "application/json"},
-            json={
-                "target": target,
-                "domain": SHORTENER_DOMAIN,
-                "description": "Erstellt mit dem Cevi QR-Code-Generator",
-                # Hand back the existing link when the same target was shortened
-                # before, so repeated clicks do not burn through the daily quota.
-                "reuse": True,
-            },
-            timeout=SHORTENER_TIMEOUT,
-        )
+        response = _post_to_shortener(payload)
     except requests.RequestException as error:
         logger.error('Could not reach the URL shortener: ' + str(error))
         return jsonify({"error": "Der Kürzungsdienst ist nicht erreichbar."}), 502
 
     if not response.ok:
         logger.error('URL shortener responded with status ' + str(response.status_code))
-        return jsonify({"error": _shortener_error(response)}), 502
+        error = _shortener_error(response)
+        # A taken or rejected slug is the caller's to fix, not a gateway failure.
+        return jsonify({"error": error}), 409 if error in SHORTENER_ERROR_TRANSLATIONS.values() else 502
 
     link = (response.json() or {}).get("link")
 
@@ -193,6 +215,28 @@ def shorten_url():
         return jsonify({"error": "Der Kürzungsdienst hat keinen Link zurückgegeben."}), 502
 
     return jsonify({"link": link})
+
+
+def _post_to_shortener(payload, retries=2):
+    """
+    Post to the shortener, retrying server errors. Kutt answers 500 when it
+    picks a database connection that went stale while idle; the next request
+    gets a fresh one and succeeds.
+    """
+
+    for attempt in range(retries + 1):
+        response = requests.post(
+            SHORTENER_API_URL,
+            headers={"x-api-key": SHORTENER_API_KEY, "Content-Type": "application/json"},
+            json=payload,
+            timeout=SHORTENER_TIMEOUT,
+        )
+
+        if response.status_code < 500 or attempt == retries:
+            return response
+
+        logger.warning('URL shortener responded with status ' + str(response.status_code) + ', retrying')
+        time.sleep(0.5 * (attempt + 1))
 
 
 def _shortener_error(response):
@@ -204,7 +248,7 @@ def _shortener_error(response):
         error = None
 
     if error:
-        return error
+        return SHORTENER_ERROR_TRANSLATIONS.get(error, error)
 
     return "Der Kürzungsdienst meldete den Status " + str(response.status_code) + "."
 
