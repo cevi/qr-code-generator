@@ -1,6 +1,7 @@
 import logging
 import os
 import re
+import time
 import unicodedata
 from urllib.parse import quote
 
@@ -196,12 +197,7 @@ def shorten_url():
         payload["reuse"] = False
 
     try:
-        response = requests.post(
-            SHORTENER_API_URL,
-            headers={"x-api-key": SHORTENER_API_KEY, "Content-Type": "application/json"},
-            json=payload,
-            timeout=SHORTENER_TIMEOUT,
-        )
+        response = _post_to_shortener(payload)
     except requests.RequestException as error:
         logger.error('Could not reach the URL shortener: ' + str(error))
         return jsonify({"error": "Der Kürzungsdienst ist nicht erreichbar."}), 502
@@ -219,6 +215,28 @@ def shorten_url():
         return jsonify({"error": "Der Kürzungsdienst hat keinen Link zurückgegeben."}), 502
 
     return jsonify({"link": link})
+
+
+def _post_to_shortener(payload, retries=2):
+    """
+    Post to the shortener, retrying server errors. Kutt answers 500 when it
+    picks a database connection that went stale while idle; the next request
+    gets a fresh one and succeeds.
+    """
+
+    for attempt in range(retries + 1):
+        response = requests.post(
+            SHORTENER_API_URL,
+            headers={"x-api-key": SHORTENER_API_KEY, "Content-Type": "application/json"},
+            json=payload,
+            timeout=SHORTENER_TIMEOUT,
+        )
+
+        if response.status_code < 500 or attempt == retries:
+            return response
+
+        logger.warning('URL shortener responded with status ' + str(response.status_code) + ', retrying')
+        time.sleep(0.5 * (attempt + 1))
 
 
 def _shortener_error(response):
