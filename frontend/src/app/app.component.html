@@ -10,6 +10,23 @@
       <design-switcher></design-switcher>
       <h3>Typ und Inhalt</h3>
       <type-switcher></type-switcher>
+    </div>
+    <div class="right">
+      <h2>Output</h2>
+      <div *ngIf="errorMessage" class="error-container" role="alert">
+        <p class="error-title">Fehler bei der QR-Code-Generierung</p>
+        <p class="error-text">{{ errorMessage }}</p>
+      </div>
+      <ng-container *ngIf="!errorMessage">
+        <img [src]="png_src" alt="QR Code" class="color-scheme-{{ applicationFacade.color | async }}" id="qr-code" />
+        <div class="downloads">
+          <a [href]="png_src" class="download" [download]="pngDownloadFilename">PNG herunterladen</a>
+          <a [href]="svg_src" class="download" [download]="svgDownloadFilename">SVG herunterladen</a>
+          <a *ngIf="pdf_src" [href]="pdf_src" class="download desktop-only" [download]="pdfDownloadFilename">PDF herunterladen (A4)</a>
+        </div>
+      </ng-container>
+    </div>
+    <div class="pdf">
       <h3>PDF-Druck</h3>
       <div class="pdf-options-section">
         <div class="field">
@@ -44,21 +61,9 @@
           </label>
         </div>
       </div>
-    </div>
-    <div class="right">
-      <h2>Output</h2>
-      <div *ngIf="errorMessage" class="error-container" role="alert">
-        <p class="error-title">Fehler bei der QR-Code-Generierung</p>
-        <p class="error-text">{{ errorMessage }}</p>
+      <div *ngIf="pdf_src && !errorMessage" class="downloads mobile-only">
+        <a [href]="pdf_src" class="download" [download]="pdfDownloadFilename">PDF herunterladen (A4)</a>
       </div>
-      <ng-container *ngIf="!errorMessage">
-        <img [src]="png_src" alt="QR Code" class="color-scheme-{{ applicationFacade.color | async }}" id="qr-code" />
-        <div class="downloads">
-          <a [href]="png_src" class="download" [download]="pngDownloadFilename">PNG herunterladen</a>
-          <a [href]="svg_src" class="download" [download]="svgDownloadFilename">SVG herunterladen</a>
-          <a *ngIf="pdf_src" [href]="pdf_src" class="download" [download]="pdfDownloadFilename">PDF herunterladen (A4)</a>
-        </div>
-      </ng-container>
     </div>
   </div>
 </div>

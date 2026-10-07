@@ -103,15 +103,31 @@
 .left-right-grid {
   display: grid;
   column-gap: 3rem;
+  grid-template-rows: auto auto 1fr;
   grid-template-areas: "header header"
-  "left right";
+  "left right"
+  "pdf right";
+}
+
+.downloads.mobile-only {
+  display: none;
 }
 
 @media screen and (max-width: 750px) {
   .left-right-grid {
+    grid-template-rows: none;
     grid-template-areas: "header"
     "left"
-    "right";
+    "right"
+    "pdf";
+  }
+
+  .downloads.mobile-only {
+    display: flex;
+  }
+
+  .download.desktop-only {
+    display: none;
   }
 }
 
@@ -121,6 +137,10 @@
 
 .right {
   grid-area: right;
+}
+
+.pdf {
+  grid-area: pdf;
 }
 
 .header {
