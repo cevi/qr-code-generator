@@ -202,17 +202,17 @@ def create_pdf(link: str, title: str = "", subtitle: str = "", show_url: bool = 
     subtitle_element = ""
 
     if title_str and subtitle_str:
-        title_element = _render_text_to_svg_image(title_str, "Montserrat Bold 14", title_color, 105.0, 36.0, max_width_mm=170.0)
+        title_element = _render_text_to_svg_image(title_str, "Montserrat Bold 22", title_color, 105.0, 35.0, max_width_mm=170.0)
         subtitle_element = _render_text_to_svg_image(subtitle_str, "Montserrat 10", subtitle_color, 105.0, 47.0, max_width_mm=170.0)
         if not title_element:
-            title_element = f'<text x="105" y="35" text-anchor="middle" font-family="Montserrat, \'DejaVu Sans\', Arial, sans-serif" font-size="7.5" font-weight="bold" fill="{title_color}">{xml_escape(title_str)}</text>'
+            title_element = f'<text x="105" y="35" text-anchor="middle" font-family="Montserrat, \'DejaVu Sans\', Arial, sans-serif" font-size="11.5" font-weight="bold" fill="{title_color}">{xml_escape(title_str)}</text>'
         if not subtitle_element:
             subtitle_element = f'<text x="105" y="45" text-anchor="middle" font-family="Montserrat, \'DejaVu Sans\', Arial, sans-serif" font-size="4.5" font-weight="normal" fill="{subtitle_color}">{xml_escape(subtitle_str)}</text>'
         qr_y = 62
     elif title_str:
-        title_element = _render_text_to_svg_image(title_str, "Montserrat Bold 16", title_color, 105.0, 42.0, max_width_mm=170.0)
+        title_element = _render_text_to_svg_image(title_str, "Montserrat Bold 24", title_color, 105.0, 42.0, max_width_mm=170.0)
         if not title_element:
-            title_element = f'<text x="105" y="42" text-anchor="middle" font-family="Montserrat, \'DejaVu Sans\', Arial, sans-serif" font-size="8.0" font-weight="bold" fill="{title_color}">{xml_escape(title_str)}</text>'
+            title_element = f'<text x="105" y="42" text-anchor="middle" font-family="Montserrat, \'DejaVu Sans\', Arial, sans-serif" font-size="12.5" font-weight="bold" fill="{title_color}">{xml_escape(title_str)}</text>'
         qr_y = 65
     elif subtitle_str:
         subtitle_element = _render_text_to_svg_image(subtitle_str, "Montserrat 12", subtitle_color, 105.0, 42.0, max_width_mm=170.0)
